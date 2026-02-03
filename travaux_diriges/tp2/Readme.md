@@ -3,6 +3,7 @@
 ##  1. Parallélisation ensemble de Mandelbrot
 
 L'ensensemble de Mandebrot est un ensemble fractal inventé par Benoit Mandelbrot permettant d'étudier la convergence ou la rapidité de divergence dans le plan complexe de la suite récursive suivante :
+
 $$
 \left\{
 \begin{array}{l}
