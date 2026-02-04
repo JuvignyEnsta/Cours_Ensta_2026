@@ -6,6 +6,8 @@ from math import log
 from time import time
 import matplotlib.cm
 
+from mpi4py import MPI
+
 
 @dataclass
 class MandelbrotSet:
@@ -48,8 +50,13 @@ class MandelbrotSet:
 
 
 # On peut changer les paramètres des deux prochaines lignes
-mandelbrot_set = MandelbrotSet(max_iterations=50, escape_radius=10)
+mandelbrot_set = MandelbrotSet(max_iterations=50, escape_radius=2.1)
 width, height = 1024, 1024
+
+globCom = MPI.COMM_WORLD.Dup()
+nbp     = globCom.size
+rank    = globCom.rank
+
 
 scaleX = 3./width
 scaleY = 2.25/height
@@ -57,15 +64,19 @@ convergence = np.empty((width, height), dtype=np.double)
 # Calcul de l'ensemble de mandelbrot :
 deb = time()
 for y in range(height):
-    for x in range(width):
-        c = complex(-2. + scaleX*x, -1.125 + scaleY * y)
-        convergence[x, y] = mandelbrot_set.convergence(c, smooth=True)
+    if y % (nbp + 1) == rank:
+        for x in range(width):
+            c = complex(-2. + scaleX*x, -1.125 + scaleY * y)
+            convergence[x, y] = mandelbrot_set.convergence(c, smooth=True)
+
+MPI.COMM_WORLD.barrier()
 fin = time()
 print(f"Temps du calcul de l'ensemble de Mandelbrot : {fin-deb}")
+
 
 # Constitution de l'image résultante :
 deb = time()
 image = Image.fromarray(np.uint8(matplotlib.cm.plasma(convergence.T)*255))
 fin = time()
 print(f"Temps de constitution de l'image : {fin-deb}")
-image.show()
+image.save("mandel.png")
