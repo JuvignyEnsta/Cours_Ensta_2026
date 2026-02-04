@@ -2,6 +2,7 @@ from time import time
 
 import numpy as np
 from mpi4py import MPI
+import os
 
 
 class Bucket:
@@ -64,10 +65,6 @@ if __name__ == "__main__":
     nb_p = comm.Get_size()
     rank = comm.Get_rank()
 
-    # if rank == root :
-    #     deb = time(); np.sort(np.random.rand(LENGTH)); fin = time()
-    #     np_sort = fin-deb
-
     MPI.COMM_WORLD.barrier()
 
     data = make_data(nb_p,rank,LENGTH)
@@ -87,6 +84,9 @@ if __name__ == "__main__":
     receive_bucket = np.sort(receive_bucket)
 
     MPI.COMM_WORLD.barrier()
+
+    affinity = os.sched_getaffinity(0)
+    print(f"Rank {rank} is pinned to Core(s): {list(affinity)}")
 
     if rank == 0:
         fin = time()
