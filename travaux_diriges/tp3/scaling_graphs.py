@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
+np_sort_time = 0.05  # Your measured np.sort time
+
+
 # Load your data
 df = pd.read_csv('results.csv')
 
@@ -14,6 +17,7 @@ plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
 plt.plot(df['cores'], df['time'], marker='o', color='red')
 plt.title('Execution Time vs. Cores')
+plt.axhline(y=np_sort_time, color='r', linestyle='--', label='Native np.sort()')
 plt.xlabel('Number of Cores')
 plt.ylabel('Time (s)')
 plt.grid(True)

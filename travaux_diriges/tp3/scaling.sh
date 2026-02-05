@@ -1,6 +1,6 @@
-echo "cores,time,used_cores" > results.csv
+echo "cores,time" > results.csv
 for p in {1..16}
 do
     echo "working with $p processors"
-    mpiexec -np $p python bucket.py >> results.csv
+    mpiexec -n $p python bucket_optimize.py >> results.csv || exit 1
 done
