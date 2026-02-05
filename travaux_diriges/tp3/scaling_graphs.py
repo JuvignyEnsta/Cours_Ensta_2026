@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-np_sort_time = 0.05  # Your measured np.sort time
+np_sort_time = 0.2436  # Your measured np.sort time
 
 
 # Load your data

@@ -82,7 +82,7 @@ if __name__ == "__main__":
         exec_time = time() - deb
         print(f"{nb_p},{exec_time:.4f}")
         
-        # # Validation compare
-        # begin = time() 
-        # np.sort(np.random.rand(LENGTH))
-        # print(f"Single Processor: {time() - begin:.4f}s")
+        # Validation compare
+        begin = time() 
+        np.sort(np.random.rand(LENGTH))
+        print(f"Single Processor: {time() - begin:.4f}s")
