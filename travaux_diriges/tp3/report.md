@@ -51,7 +51,7 @@ Pour simuler l'existence de cores supplementaires, j'ai utilise l'option `--over
 
 ### Visualisation
 
-Pour visualiser les resultats, le programme `scaling_graphs.py` a ete utilise. **Je ne l'ai pas redige moi-meme**.
+Pour visualiser les resultats, le programme `scaling_graphs.py` a ete utilise. **Je ne l'ai pas redige moi-meme**. La barre horizontale en tirets est la vitesse de np.sort()
 
 ![resultat en speedup](./speedup.png)
 
@@ -59,7 +59,7 @@ Pour visualiser les resultats, le programme `scaling_graphs.py` a ete utilise. *
 
 #### Scaling..
 
-Le speedup obtenu est une courbe tres interressante a analyser. En effet, sur les $6$ premieres processeurs, on voit une droite qui match exactement ce a quoi on s'attent, qui est le optimal speedup. Mais a partir du 6eme, la pente est < 1, ceci est du a la topologie de la machine.
+Le speedup obtenu est une courbe tres interressante a analyser. En effet, sur les $6$ premieres processeurs, on voit une droite qui match exactement ce a quoi on s'attent, la courbe classique de speedup. Mais a partir du 6eme, il y a une chute, a la fois en speedup, et en pente, ceci est du a la topologie de la machine.
 
 Grace a `affinity = os.sched_getaffinity(0)` on peut associer `rank` dans `MPI` avec les numeros des cpu de `lstopo`. ceci revele que `MPI` demande pour $n$ processeurs d'utiliser les $n$ premiers, et non pas un subset de ceux qui sont libres, ou autre.
 
@@ -75,7 +75,7 @@ Au dela de 17, on tombe dans le domaine de `oversubscribe` qui simule l'existenc
 
 Le but final de ce projet est de comprendre que le multiprocessing est un vrai avantage par rapport a la programmation sequentielle sur un core. Heureusement, c'est exactement ce que l'on trouve, un peu d'ingenuite, et beaucoup de technologie est un peu plus rapide qu'un algorithme decrit il y a plus de 80 ans. (`np.sort()` utilise un tri en $O(n*ln(n))$).
 
-Je ne sais pas combien de ceci est du au choix du langage, ou au manque d'acces a une machine bien plus performante avec plusieurs dizaines de cores. Il est meme possible d'envisager de faire ces calculs sur une carte graphique, mais ceci sera peutetre explore dans la suite du cours... 
+Je ne sais pas combien de ceci est du au choix du langage, ou au manque d'acces a une machine bien plus performante avec plusieurs dizaines de cores. Il est meme possible d'envisager de faire ces calculs sur une carte graphique, mais ceci sera peutetre explore dans la suite du cours...
 
 ## 5 - Questions
 
