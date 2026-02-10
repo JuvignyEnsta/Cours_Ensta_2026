@@ -5,6 +5,9 @@ from PIL import Image
 from math import log
 from time import time
 import matplotlib.cm
+from scipy import linalg as slinalg
+
+from mpi4py import MPI
 
 
 class MandelbrotSet:
@@ -29,14 +32,7 @@ class MandelbrotSet:
         #   1. Appartenance aux disques  C0{(0,0),1/4} et C1{(-1,0),1/4}
         iter = self.max_iterations * np.ones(c.shape, dtype=np.double)
         mask = (np.abs(c) >= 0.25) | (np.abs(c+1.) >= 0.25)
-        #  2.  Appartenance à la cardioïde {(1/4,0),1/2(1-cos(theta))}
-        #if (c.real > -0.75) and (c.real < 0.5):
-        #    ct = c.real-0.25 + 1.j * c.imag
-        #    ctnrm2 = abs(ct)
-        #    if ctnrm2 < 0.5*(1-ct.real/max(ctnrm2, 1.E-14)):
-        #        return self.max_iterations
         # Sinon on itère
-        from scipy import linalg as slinalg
         z = np.zeros(c.shape, dtype=np.complex128)
         for it in range(self.max_iterations):
             z[mask] = z[mask]*z[mask] + c[mask]
@@ -52,15 +48,30 @@ class MandelbrotSet:
 
 # On peut changer les paramètres des deux prochaines lignes
 mandelbrot_set = MandelbrotSet(max_iterations=200, escape_radius=2.)
+
+globCom = MPI.COMM_WORLD.Dup()
+nbp = globCom.size
+rank = globCom.rank
+
 width, height = 1024, 1024
+parcel_size = height // nbp
+height = parcel_size * nbp
+
 
 scaleX = 3./width
 scaleY = 2.25/height
 convergence = np.empty((width, height), dtype=np.double)
 # Calcul de l'ensemble de mandelbrot :
+
+begin_x = -2.
+begin_y = -1.125 + scaleY * (rank * parcel_size)
+
+x = begin_x + scaleX * np.arange(width)
+y = begin_y + scaleY * np.arange(parcel_size)
+
+
 deb = time()
 for y in range(height):
-    #for x in range(width):
     c = np.array([complex(-2. + scaleX*x, -1.125 + scaleY * y) for x in range(width)])
     convergence[:, y] = mandelbrot_set.convergence(c, smooth=True)
 fin = time()
@@ -68,7 +79,7 @@ print(f"Temps du calcul de l'ensemble de Mandelbrot : {fin-deb}")
 
 # Constitution de l'image résultante :
 deb = time()
-image = Image.fromarray(np.uint8(matplotlib.cm.plasma(convergence.T)*255))
+image = Image.fromarray(np.uint8(matplotlib.cm.afmhot(convergence.T)*255))
 fin = time()
 print(f"Temps de constitution de l'image : {fin-deb}")
-image.show()
+image.save("mandel.png")
