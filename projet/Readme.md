@@ -44,14 +44,14 @@ Décrivons la dynamique du modèle. Au départ :
 $$
    V_{1}(s) \rightarrow \left\{\begin{array}{ll}
  1 & \text{si la source de nourriture est en }s \\
- \alpha \max_{1}(N(s)) + (1-\alpha)avg_{1}(s) & \text{sinon}
+ \alpha \max_{1}(N(s)) + (1-\alpha)avg_{1}(N(s)) & \text{sinon}
  \end{array}\right.
 $$
    et
 $$
 V_{2}(s) \rightarrow \left\{\begin{array}{ll} 
  1 & \text{si la fourmilière est en }s \\
- \alpha \max_{2}(N(s)) + (1-\alpha)avg_{2}(s) & \text{sinon}
+ \alpha \max_{2}(N(s)) + (1-\alpha)avg_{2}(N(s)) & \text{sinon}
  \end{array}\right.
 $$
    où $0\leq \alpha \leq 1$ 

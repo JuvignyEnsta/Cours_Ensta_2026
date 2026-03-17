@@ -25,5 +25,4 @@ for d in range(dim):
         src = rank - 2**d
         jeton = globCom.recv(source=src, tag=d)
         print(f"Processus {rank} a reçu le jeton {jeton} du processus {src}",flush=True)
-        
 print(f"Processus {rank} termine avec le jeton {jeton}")

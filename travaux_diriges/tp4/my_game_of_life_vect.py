@@ -24,9 +24,13 @@ On itère ensuite pour étudier la façon dont évolue la population des cellule
 """
 import pygame  as pg
 import numpy   as np
+from mpi4py import MPI
 
+globCom = MPI.COMM_WORLD.Dup()
+rank = globCom.Get_rank()
+nbp  = globCom.Get_size()
 
-
+newCom = globCom.Split(rank != 0, rank)
 
 class Grille:
     """
@@ -78,17 +82,8 @@ class Grille:
         C[1,1]=0
         voisins = convolve2d(self.cells, C, mode='same', boundary='wrap') # si on met boundary en commentaire on a pas la propriété de tor
         Grille.h(voisins)
-        # Point de vue continue
         temp = self.cells + voisins
-        next_cells = np.clip(temp, 0, 1)          
-
-        # Point de vue discontinue
-        #next_cells[voisins == 3] = 1 # les cellules entourés de 3 cellules vivantes sont vivantes 
-        #print(f"next cells 1 : {next_cells}")
-        #next_cells[(self.cells == 1) & (voisins == 2)] = 1 # les cellules entourés de deux restent vivantes
-        #print(f"next cells 2 : {next_cells}")
-
-       
+        next_cells = np.clip(temp, 0, 1)       
         self.cells = next_cells
         return diff_cells
 
@@ -186,5 +181,5 @@ if __name__ == '__main__':
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 mustContinue = False
-        print(f"Temps calcul prochaine generation : {t2-t1:2.2e} secondes, temps affichage : {t3-t2:2.2e} secondes\r", end='');
+        print(f"Temps calcul prochaine generation : {t2-t1:2.2e} secondes, temps affichage : {t3-t2:2.2e} secondes\r", end='')
     pg.quit()
